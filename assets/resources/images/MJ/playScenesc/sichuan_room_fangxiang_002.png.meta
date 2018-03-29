@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "38fecf5f-94eb-4586-aabe-3bc2ae184d0f",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "sichuan_room_fangxiang_002": {
+      "ver": "1.0.3",
+      "uuid": "e780b529-e5dd-47f4-89b9-085eb0c305ff",
+      "rawTextureUuid": "38fecf5f-94eb-4586-aabe-3bc2ae184d0f",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 92,
+      "height": 21,
+      "rawWidth": 92,
+      "rawHeight": 21,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

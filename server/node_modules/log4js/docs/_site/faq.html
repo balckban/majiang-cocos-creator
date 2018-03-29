@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="frequently-asked-questions">Frequently Asked Questions</h1>
+
+<h2 id="i-want-errors-to-go-to-a-special-file-but-still-want-everything-written-to-another-file---how-do-i-do-that">I want errors to go to a special file, but still want everything written to another file - how do I do that?</h2>
+
+<p>You’ll need to use the <a href="/logLevelFilter.html">logLevelFilter</a>. Here’s an example configuration:</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">everything</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'file'</span><span class="p">,</span> <span class="na">filename</span><span class="p">:</span> <span class="s1">'all-the-logs.log'</span> <span class="p">},</span>
+    <span class="na">emergencies</span><span class="p">:</span> <span class="p">{</span>  <span class="na">type</span><span class="p">:</span> <span class="s1">'file'</span><span class="p">,</span> <span class="na">filename</span><span class="p">:</span> <span class="s1">'oh-no-not-again.log'</span> <span class="p">},</span>
+    <span class="s1">'just-errors'</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'logLevelFilter'</span><span class="p">,</span> <span class="na">appender</span><span class="p">:</span> <span class="s1">'emergencies'</span><span class="p">,</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'error'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'just-errors'</span><span class="p">,</span> <span class="s1">'everything'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'debug'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">();</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="s1">'This goes to all-the-logs.log'</span><span class="p">);</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">'As does this.'</span><span class="p">);</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'This goes to all-the-logs.log and oh-no-not-again.log'</span><span class="p">);</span>
+
+</code></pre>
+</div>
+
+<h2 id="i-want-to-reload-the-configuration-when-i-change-my-config-file---how-do-i-do-that">I want to reload the configuration when I change my config file - how do I do that?</h2>
+
+<p>Previous versions of log4js used to watch for changes in the configuration file and reload when it changed. It didn’t always work well, sometimes leaving file handles or sockets open. This feature was removed in version 2.x. As a replacement, I’d suggest using a library like <a href="https://www.npmjs.com/package/watchr">watchr</a> to notify you of file changes. Then you can call <code class="highlighter-rouge">log4js.shutdown</code> followed by <code class="highlighter-rouge">log4js.configure</code> again.</p>
+
+<h2 id="what-happened-to-replaceconsole---it-doesnt-work-any-more">What happened to <code class="highlighter-rouge">replaceConsole</code> - it doesn’t work any more?</h2>
+
+<p>I removed <code class="highlighter-rouge">replaceConsole</code> - it caused a few weird errors, and I wasn’t entirely comfortable with messing around with a core part of node. If you still want to do this, then code like this should do the trick:</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">(...);</span> <span class="c1">// set up your categories and appenders</span>
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">(</span><span class="s1">'console'</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="o">=</span> <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">logger</span><span class="p">);</span> <span class="c1">// do the same for others - console.debug, etc.</span>
+</code></pre>
+</div>
+
+<h2 id="im-using-pm2-but-im-not-getting-any-logs">I’m using PM2, but I’m not getting any logs!</h2>
+<p>To get log4js working with PM2, you’ll need to install the <a href="https://www.npmjs.com/package/pm2-intercom">pm2-intercom</a> module.</p>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>pm2 install pm2-intercom
+</code></pre>
+</div>
+<p>Then add the value <code class="highlighter-rouge">pm2: true</code> to your log4js configuration. If you’re also using <code class="highlighter-rouge">node-config</code>, then you’ll probably have renamed your <code class="highlighter-rouge">NODE_APP_INSTANCE</code> environment variable. If so, you’ll also need to add <code class="highlighter-rouge">pm2InstanceVar: '&lt;NEW_APP_INSTANCE_ID&gt;'</code> where <code class="highlighter-rouge">&lt;NEW_APP_INSTANCE_ID&gt;</code> should be replaced with the new name you gave the instance environment variable.</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span> <span class="na">out</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'stdout'</span><span class="p">}},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'out'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span><span class="p">}},</span>
+  <span class="na">pm2</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="na">pm2InstanceVar</span><span class="p">:</span> <span class="s1">'INSTANCE_ID'</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
+<h2 id="npm-complains-about-nodemailer-being-deprecated-what-should-i-do">NPM complains about nodemailer being deprecated, what should I do?</h2>
+
+<p>Nodemailer version 4.0.1 (the not-deprecated version) requires a node version &gt;= 6, but log4js supports node versions &gt;= 4. So until I stop supporting node versions less than 6 I can’t update the dependency. It’s only an optional dependency anyway, so you’re free to install nodemailer@4.0.1 if you want - as far as I know it should work, the API looks the same to me. If you know that the smtp appender definitely doesn’t work with nodemailer v4, then please create an issue with some details about the problem.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

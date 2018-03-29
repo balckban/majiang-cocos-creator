@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="multifile-appender">MultiFile Appender</h1>
+
+<p>The multiFile appender can be used to dynamically write logs to multiple files, based on a property of the logging event. Use this as a way to write separate log files for each category when the number of categories is unknown, for instance. It creates <a href="/file.html">file</a> appenders under the hood, so all the options that apply to that appender (apart from filename) can be used with this one, allowing the log files to be rotated and capped at a certain size.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">"multiFile"</code></li>
+  <li><code class="highlighter-rouge">base</code> - <code class="highlighter-rouge">string</code> - the base part of the generated log filename</li>
+  <li><code class="highlighter-rouge">property</code> - <code class="highlighter-rouge">string</code> - the value to use to split files (see below).</li>
+  <li><code class="highlighter-rouge">extension</code> - <code class="highlighter-rouge">string</code> - the suffix for the generated log filename.</li>
+</ul>
+
+<p>All other properties will be passed to the created <a href="/file.html">file</a> appenders. For the property value, <code class="highlighter-rouge">categoryName</code> is probably the most useful - although you could use <code class="highlighter-rouge">pid</code> or <code class="highlighter-rouge">level</code>. If the property is not found then the appender will look for the value in the context map. If that fails, then the logger will not output the logging event, without an error. This is to allow for dynamic properties which may not exist for all log messages.</p>
+
+<h2 id="example-split-on-category">Example (split on category)</h2>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">multi</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'multiFile'</span><span class="p">,</span> <span class="na">base</span><span class="p">:</span> <span class="s1">'logs/'</span><span class="p">,</span> <span class="na">property</span><span class="p">:</span> <span class="s1">'categoryName'</span><span class="p">,</span> <span class="na">extension</span><span class="p">:</span> <span class="s1">'.log'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span> <span class="s1">'multi'</span> <span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'debug'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">();</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="s1">'I will be logged in logs/default.log'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">otherLogger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">(</span><span class="s1">'cheese'</span><span class="p">);</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">'Cheese is cheddar - this will be logged in logs/cheese.log'</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<p>This example will result in two log files (<code class="highlighter-rouge">logs/default.log</code> and <code class="highlighter-rouge">logs/cheese.log</code>) containing the log messages.</p>
+
+<h2 id="example-with-log-rolling-and-compressed-backups">Example with log rolling (and compressed backups)</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">everything</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'multiFile'</span><span class="p">,</span> <span class="na">base</span><span class="p">:</span> <span class="s1">'logs/'</span><span class="p">,</span> <span class="na">property</span><span class="p">:</span> <span class="s1">'userID'</span><span class="p">,</span> <span class="na">extension</span><span class="p">:</span> <span class="s1">'.log'</span><span class="p">,</span>
+      <span class="na">maxLogSize</span><span class="p">:</span> <span class="mi">10485760</span><span class="p">,</span> <span class="na">backups</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="na">compress</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span> <span class="s1">'everything'</span> <span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'debug'</span><span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kr">const</span> <span class="nx">userLogger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">(</span><span class="s1">'user'</span><span class="p">);</span>
+<span class="nx">userLogger</span><span class="p">.</span><span class="nx">addContext</span><span class="p">(</span><span class="s1">'userID'</span><span class="p">,</span> <span class="nx">user</span><span class="p">.</span><span class="nx">getID</span><span class="p">());</span>
+<span class="nx">userLogger</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">'this user just logged in'</span><span class="p">);</span>
+</code></pre>
+</div>
+<p>This will result in one log file (<code class="highlighter-rouge">logs/u12345.log</code>), capped at 10Mb in size, with three backups kept when rolling the file. If more users were logged, each user would get their own files, and their own backups.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

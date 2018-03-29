@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="redis-appender">Redis Appender</h1>
+
+<p>Stores log events in a <a href="https://redis.io">Redis</a> database. You will need to include the <a href="https://www.npmjs.com/package/redis">redis</a> package in your application’s dependencies to use this appender.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">redis</code></li>
+  <li><code class="highlighter-rouge">host</code> - <code class="highlighter-rouge">string</code> (optional, defaults to <code class="highlighter-rouge">127.0.0.1</code>) - the location of the redis server</li>
+  <li><code class="highlighter-rouge">port</code> - <code class="highlighter-rouge">integer</code> (optional, defaults to <code class="highlighter-rouge">6379</code>) - the port the redis server is listening on</li>
+  <li><code class="highlighter-rouge">pass</code> - <code class="highlighter-rouge">string</code> (optional) - password to use when authenticating connection to redis</li>
+  <li><code class="highlighter-rouge">channel</code> - <code class="highlighter-rouge">string</code> - the redis channel that log events will be published to</li>
+  <li><code class="highlighter-rouge">layout</code> - <code class="highlighter-rouge">object</code> (optional, defaults to <code class="highlighter-rouge">messagePassThroughLayout</code>) - the layout to use for log events (see <a href="/layouts.html">layouts</a>).</li>
+</ul>
+
+<p>The appender will use the Redis PUBLISH command to send the log event messages to the channel.</p>
+
+<h2 id="example">Example</h2>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">redis</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'redis'</span><span class="p">,</span> <span class="na">channel</span><span class="p">:</span> <span class="s1">'logs'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'redis'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
+<p>This configuration will publish log messages to the <code class="highlighter-rouge">logs</code> channel on <code class="highlighter-rouge">127.0.0.1:6379</code>.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

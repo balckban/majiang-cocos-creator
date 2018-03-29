@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="slack-appender">Slack Appender</h1>
+
+<p>Sends log events to a <a href="https://slack.com">slack</a> channel. To use this appender you will need to include <a href="https://www.npmjs.com/package/slack-node">slack-node</a> in your application’s dependencies.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">slack</code></li>
+  <li><code class="highlighter-rouge">token</code> - <code class="highlighter-rouge">string</code> - your Slack API token (see the slack and slack-node docs)</li>
+  <li><code class="highlighter-rouge">channel_id</code> - <code class="highlighter-rouge">string</code> - the channel to send log messages</li>
+  <li><code class="highlighter-rouge">icon_url</code> - <code class="highlighter-rouge">string</code> (optional) - the icon to use for the message</li>
+  <li><code class="highlighter-rouge">username</code> - <code class="highlighter-rouge">string</code> - the username to display with the message</li>
+  <li><code class="highlighter-rouge">layout</code> - <code class="highlighter-rouge">object</code> (optional, defaults to <code class="highlighter-rouge">basicLayout</code>) - the layout to use for the message (see <a href="/layouts.html">layouts</a>).</li>
+</ul>
+
+<h2 id="example">Example</h2>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">alerts</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'slack'</span><span class="p">,</span>
+      <span class="na">token</span><span class="p">:</span> <span class="s1">'abc123def'</span><span class="p">,</span>
+      <span class="na">channel_id</span><span class="p">:</span> <span class="s1">'prod-alerts'</span><span class="p">,</span>
+      <span class="na">username</span><span class="p">:</span> <span class="s1">'our_application'</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'alerts'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'error'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>This configuration will send all error (and above) messages to the <code class="highlighter-rouge">prod-alerts</code> slack channel, with the username <code class="highlighter-rouge">our_application</code>.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

@@ -1,0 +1,269 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="layouts">Layouts</h1>
+
+<p>Layouts are functions used by appenders to format log events for output. They take a log event as an argument and return a string. Log4js comes with several appenders built-in, and provides ways to create your own if these are not suitable.</p>
+
+<p>For most use cases you will not need to configure layouts - there are some appenders which do not need layouts defined (for example, <a href="/logFaces-UDP.html">logFaces-UDP</a>); all the appenders that use layouts will have a sensible default defined.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<p>Most appender configuration will take a field called <code class="highlighter-rouge">layout</code>, which is an object - typically with a single field <code class="highlighter-rouge">type</code> which is the name of a layout defined below. Some layouts require extra configuration options, which should be included in the same object.</p>
+
+<h2 id="example">Example</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span> <span class="na">out</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'stdout'</span><span class="p">,</span> <span class="na">layout</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'basic'</span> <span class="p">}</span> <span class="p">}</span> <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'out'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>This configuration replaces the <a href="/stdout.html">stdout</a> appender’s default <code class="highlighter-rouge">coloured</code> layout with <code class="highlighter-rouge">basic</code> layout.</p>
+
+<h1 id="built-in-layouts">Built-in Layouts</h1>
+
+<h2 id="basic">Basic</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">basic</code></li>
+</ul>
+
+<p>Basic layout will output the timestamp, level, category, followed by the formatted log event data.</p>
+
+<h2 id="example-1">Example</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span> <span class="s1">'out'</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'stdout'</span><span class="p">,</span> <span class="na">layout</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'basic'</span> <span class="p">}</span> <span class="p">}</span> <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'out'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">});</span>
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">(</span><span class="s1">'cheese'</span><span class="p">);</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Cheese is too ripe!'</span><span class="p">);</span>
+</code></pre>
+</div>
+<p>This will output:</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>[2017-03-30 07:57:00.113] [ERROR] cheese - Cheese is too ripe!
+</code></pre>
+</div>
+
+<h2 id="coloured">Coloured</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">coloured</code> (or <code class="highlighter-rouge">colored</code>)</li>
+</ul>
+
+<p>This layout is the same as <code class="highlighter-rouge">basic</code>, except that the timestamp, level and category will be coloured according to the log event’s level (if your terminal/file supports it - if you see some weird characters in your output and no colour then you should probably switch to <code class="highlighter-rouge">basic</code>). The colours used are:</p>
+<ul>
+  <li><code class="highlighter-rouge">TRACE</code> - ‘blue’</li>
+  <li><code class="highlighter-rouge">DEBUG</code> - ‘cyan’</li>
+  <li><code class="highlighter-rouge">INFO</code> - ‘green’</li>
+  <li><code class="highlighter-rouge">WARN</code> - ‘yellow’</li>
+  <li><code class="highlighter-rouge">ERROR</code> - ‘red’</li>
+  <li><code class="highlighter-rouge">FATAL</code> - ‘magenta’</li>
+</ul>
+
+<h2 id="message-pass-through">Message Pass-Through</h2>
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">messagePassThrough</code></li>
+</ul>
+
+<p>This layout just formats the log event data, and does not output a timestamp, level or category. It is typically used in appenders that serialise the events using a specific format (e.g. <a href="/gelf.html">gelf</a>).</p>
+
+<h2 id="example-2">Example</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span> <span class="na">out</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'stdout'</span><span class="p">,</span> <span class="na">layout</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'messagePassThrough'</span> <span class="p">}</span> <span class="p">}</span> <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span> <span class="s1">'out'</span> <span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">});</span>
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">(</span><span class="s1">'cheese'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">cheeseName</span> <span class="o">=</span> <span class="s1">'gouda'</span><span class="p">;</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Cheese is too ripe! Cheese was: '</span><span class="p">,</span> <span class="nx">cheeseName</span><span class="p">);</span>
+</code></pre>
+</div>
+<p>This will output:</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>Cheese is too ripe! Cheese was: gouda
+</code></pre>
+</div>
+
+<h2 id="dummy">Dummy</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">dummy</code></li>
+</ul>
+
+<p>This layout only outputs the first value in the log event’s data. It was added for the <a href="/logstashUDP.html">logstashUDP</a> appender, and I’m not sure there’s much use for it outside that.</p>
+
+<h2 id="example-3">Example</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span> <span class="na">out</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'stdout'</span><span class="p">,</span> <span class="na">layout</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'dummy'</span> <span class="p">}</span> <span class="p">}</span> <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span> <span class="s1">'out'</span> <span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">});</span>
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">(</span><span class="s1">'cheese'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">cheeseName</span> <span class="o">=</span> <span class="s1">'gouda'</span><span class="p">;</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Cheese is too ripe! Cheese was: '</span><span class="p">,</span> <span class="nx">cheeseName</span><span class="p">);</span>
+</code></pre>
+</div>
+<p>This will output:</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>Cheese is too ripe! Cheese was:
+</code></pre>
+</div>
+
+<h2 id="pattern">Pattern</h2>
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">pattern</code></li>
+  <li><code class="highlighter-rouge">pattern</code> - <code class="highlighter-rouge">string</code> - specifier for the output format, using placeholders as described below</li>
+  <li><code class="highlighter-rouge">tokens</code> - <code class="highlighter-rouge">object</code> (optional) - user-defined tokens to be used in the pattern</li>
+</ul>
+
+<h2 id="pattern-format">Pattern format</h2>
+<p>The pattern string can contain any characters, but sequences beginning with <code class="highlighter-rouge">%</code> will be replaced with values taken from the log event, and other environmental values.
+Format for specifiers is <code class="highlighter-rouge">%[padding].[truncation][field]{[format]}</code> - padding and truncation are optional, and format only applies to a few tokens (notably, date).
+e.g. %5.10p - left pad the log level by 5 characters, up to a max of 10</p>
+
+<p>Fields can be any of:</p>
+<ul>
+  <li><code class="highlighter-rouge">%r</code> time in toLocaleTimeString format</li>
+  <li><code class="highlighter-rouge">%p</code> log level</li>
+  <li><code class="highlighter-rouge">%c</code> log category</li>
+  <li><code class="highlighter-rouge">%h</code> hostname</li>
+  <li><code class="highlighter-rouge">%m</code> log data</li>
+  <li><code class="highlighter-rouge">%d</code> date, formatted - default is <code class="highlighter-rouge">ISO8601</code>, format options are: <code class="highlighter-rouge">ISO8601</code>, <code class="highlighter-rouge">ISO8601_WITH_TZ_OFFSET</code>, <code class="highlighter-rouge">ABSOLUTE</code>, <code class="highlighter-rouge">DATE</code>, or any string compatible with the <a href="https://www.npmjs.com/package/date-format">date-format</a> library. e.g. <code class="highlighter-rouge">%d{DATE}</code>, <code class="highlighter-rouge">%d{yyyy/MM/dd-hh.mm.ss}</code></li>
+  <li><code class="highlighter-rouge">%%</code> % - for when you want a literal <code class="highlighter-rouge">%</code> in your output</li>
+  <li><code class="highlighter-rouge">%n</code> newline</li>
+  <li><code class="highlighter-rouge">%z</code> process id (from <code class="highlighter-rouge">process.pid</code>)</li>
+  <li><code class="highlighter-rouge">%x{&lt;tokenname&gt;}</code> add dynamic tokens to your log. Tokens are specified in the tokens parameter.</li>
+  <li><code class="highlighter-rouge">%X{&lt;tokenname&gt;}</code> add values from the Logger context. Tokens are keys into the context values.</li>
+  <li><code class="highlighter-rouge">%[</code> start a coloured block (colour will be taken from the log level, similar to <code class="highlighter-rouge">colouredLayout</code>)</li>
+  <li><code class="highlighter-rouge">%]</code> end a coloured block</li>
+</ul>
+
+<h2 id="tokens">Tokens</h2>
+<p>User-defined tokens can be either a string or a function. Functions will be passed the log event, and should return a string. For example, you could define a custom token that outputs the log event’s context value for ‘user’ like so:</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">out</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'stdout'</span><span class="p">,</span> <span class="na">layout</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'pattern'</span><span class="p">,</span>
+      <span class="na">pattern</span><span class="p">:</span> <span class="s1">'%d %p %c %x{user} %m%n'</span><span class="p">,</span>
+      <span class="na">tokens</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">user</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">logEvent</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="nx">AuthLibrary</span><span class="p">.</span><span class="nx">currentUser</span><span class="p">();</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'out'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">});</span>
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">();</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">'doing something.'</span><span class="p">);</span>
+</code></pre>
+</div>
+<p>This would output:</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>2017-06-01 08:32:56.283 INFO default charlie doing something.
+</code></pre>
+</div>
+
+<p>You can also use the Logger context to store tokens (sometimes called Nested Diagnostic Context, or Mapped Diagnostic Context) and use them in your layouts.</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">out</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'stdout'</span><span class="p">,</span> <span class="na">layout</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'pattern'</span><span class="p">,</span>
+      <span class="na">pattern</span><span class="p">:</span> <span class="s1">'%d %p %c %X{user} %m%n'</span>
+    <span class="p">}}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'out'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">});</span>
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">();</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">addContext</span><span class="p">(</span><span class="s1">'user'</span><span class="p">,</span> <span class="s1">'charlie'</span><span class="p">);</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">'doing something.'</span><span class="p">);</span>
+</code></pre>
+</div>
+<p>This would output:</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>2017-06-01 08:32:56.283 INFO default charlie doing something.
+</code></pre>
+</div>
+<p>Note that you can also add functions to the Logger Context, and they will be passed the logEvent as well.</p>
+
+<h1 id="adding-your-own-layouts">Adding your own layouts</h1>
+
+<p>You can add your own layouts by calling <code class="highlighter-rouge">log4js.addLayout(type, fn)</code> before calling <code class="highlighter-rouge">log4js.configure</code>. <code class="highlighter-rouge">type</code> is the label you want to use to refer to your layout in appender configuration. <code class="highlighter-rouge">fn</code> is a function that takes a single object argument, which will contain the configuration for the layout instance, and returns a layout function. A layout function takes a log event argument and returns a string (usually, although you could return anything as long as the appender knows what to do with it).</p>
+
+<h2 id="custom-layout-example">Custom Layout Example</h2>
+<p>This example can also be found in examples/custom-layout.js.</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">log4js</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'log4js'</span><span class="p">);</span>
+
+<span class="nx">log4js</span><span class="p">.</span><span class="nx">addLayout</span><span class="p">(</span><span class="s1">'json'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">logEvent</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">logEvent</span><span class="p">)</span> <span class="o">+</span> <span class="nx">config</span><span class="p">.</span><span class="nx">separator</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">out</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'stdout'</span><span class="p">,</span> <span class="na">layout</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'json'</span><span class="p">,</span> <span class="na">separator</span><span class="p">:</span> <span class="s1">','</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'out'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">(</span><span class="s1">'json-test'</span><span class="p">);</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">'this is just a test'</span><span class="p">);</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'of a custom appender'</span><span class="p">);</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s1">'that outputs json'</span><span class="p">);</span>
+<span class="nx">log4js</span><span class="p">.</span><span class="nx">shutdown</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{});</span>
+</code></pre>
+</div>
+<p>This example outputs the following:</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="s2">"startTime"</span><span class="err">:</span><span class="s2">"2017-06-05T22:23:08.479Z"</span><span class="p">,</span><span class="s2">"categoryName"</span><span class="err">:</span><span class="s2">"json-test"</span><span class="p">,</span><span class="s2">"data"</span><span class="err">:</span><span class="p">[</span><span class="s2">"this is just a test"</span><span class="p">],</span><span class="s2">"level"</span><span class="err">:</span><span class="p">{</span><span class="s2">"level"</span><span class="err">:</span><span class="mi">20000</span><span class="p">,</span><span class="s2">"levelStr"</span><span class="err">:</span><span class="s2">"INFO"</span><span class="p">},</span><span class="s2">"context"</span><span class="err">:</span><span class="p">{}},</span>
+<span class="p">{</span><span class="s2">"startTime"</span><span class="p">:</span><span class="s2">"2017-06-05T22:23:08.483Z"</span><span class="p">,</span><span class="s2">"categoryName"</span><span class="p">:</span><span class="s2">"json-test"</span><span class="p">,</span><span class="s2">"data"</span><span class="p">:[</span><span class="s2">"of a custom appender"</span><span class="p">],</span><span class="s2">"level"</span><span class="p">:{</span><span class="s2">"level"</span><span class="p">:</span><span class="mi">40000</span><span class="p">,</span><span class="s2">"levelStr"</span><span class="p">:</span><span class="s2">"ERROR"</span><span class="p">},</span><span class="s2">"context"</span><span class="p">:{}},</span>
+<span class="p">{</span><span class="s2">"startTime"</span><span class="p">:</span><span class="s2">"2017-06-05T22:23:08.483Z"</span><span class="p">,</span><span class="s2">"categoryName"</span><span class="p">:</span><span class="s2">"json-test"</span><span class="p">,</span><span class="s2">"data"</span><span class="p">:[</span><span class="s2">"that outputs json"</span><span class="p">],</span><span class="s2">"level"</span><span class="p">:{</span><span class="s2">"level"</span><span class="p">:</span><span class="mi">30000</span><span class="p">,</span><span class="s2">"levelStr"</span><span class="p">:</span><span class="s2">"WARN"</span><span class="p">},</span><span class="s2">"context"</span><span class="p">:{}},</span>
+</code></pre>
+</div>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

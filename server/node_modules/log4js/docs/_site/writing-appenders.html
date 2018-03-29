@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="writing-appenders-for-log4js">Writing Appenders for Log4js</h1>
+
+<p>Log4js can load appenders from outside its core set. To add a custom appender, the easiest way is to make it a stand-alone module and publish to npm. You can also load appenders from your own application, but they must be defined in a module.</p>
+
+<h2 id="loading-mechanism">Loading mechanism</h2>
+
+<p>When log4js parses your configuration, it loops through the defined appenders. For each one, it will <code class="highlighter-rouge">require</code> the appender initially using the <code class="highlighter-rouge">type</code> value prepended with ‘./appenders’ as the module identifier - this is to try loading from the core appenders first. If that fails (the module could not be found in the core appenders), then log4js will try to require the module using just the <code class="highlighter-rouge">type</code> value. If that fails, an error will be raised.</p>
+
+<h2 id="appender-modules">Appender Modules</h2>
+
+<p>An appender module should export a single function called <code class="highlighter-rouge">configure</code>. The function should accept the following arguments:</p>
+<ul>
+  <li><code class="highlighter-rouge">config</code> - <code class="highlighter-rouge">object</code> - the appender’s configuration object</li>
+  <li><code class="highlighter-rouge">layouts</code> - <code class="highlighter-rouge">module</code> - gives access to the <a href="/layouts.html">layouts</a> module, which most appenders will need
+    <ul>
+      <li><code class="highlighter-rouge">layout</code> - <code class="highlighter-rouge">function(type, config)</code> - this is the main function that appenders will use to find a layout</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">findAppender</code> - <code class="highlighter-rouge">function(name)</code> - if your appender is a wrapper around another appender (like the <a href="/logLevelFilter.html">logLevelFilter</a> for example), this function can be used to find another appender by name</li>
+  <li><code class="highlighter-rouge">levels</code> - <code class="highlighter-rouge">module</code> - gives access to the <a href="levels.md">levels</a> module, which most appenders will need</li>
+</ul>
+
+<p><code class="highlighter-rouge">configure</code> should return a function which accepts a logEvent, which is the appender itself. One of the simplest examples is the <a href="/stdout.html">stdout</a> appender. Let’s run through the code.</p>
+
+<h2 id="example">Example</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// This is the function that generates an appender function</span>
+<span class="kd">function</span> <span class="nx">stdoutAppender</span><span class="p">(</span><span class="nx">layout</span><span class="p">,</span> <span class="nx">timezoneOffset</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// This is the appender function itself</span>
+  <span class="k">return</span> <span class="p">(</span><span class="nx">loggingEvent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">process</span><span class="p">.</span><span class="nx">stdout</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">layout</span><span class="p">(</span><span class="nx">loggingEvent</span><span class="p">,</span> <span class="nx">timezoneOffset</span><span class="p">)}</span><span class="err">\</span><span class="nx">n</span><span class="err">`</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="c1">// stdout configure doesn't need to use findAppender, or levels</span>
+<span class="kd">function</span> <span class="nx">configure</span><span class="p">(</span><span class="nx">config</span><span class="p">,</span> <span class="nx">layouts</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// the default layout for the appender</span>
+  <span class="kd">let</span> <span class="nx">layout</span> <span class="o">=</span> <span class="nx">layouts</span><span class="p">.</span><span class="nx">colouredLayout</span><span class="p">;</span>
+  <span class="c1">// check if there is another layout specified</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">config</span><span class="p">.</span><span class="nx">layout</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// load the layout</span>
+    <span class="nx">layout</span> <span class="o">=</span> <span class="nx">layouts</span><span class="p">.</span><span class="nx">layout</span><span class="p">(</span><span class="nx">config</span><span class="p">.</span><span class="nx">layout</span><span class="p">.</span><span class="nx">type</span><span class="p">,</span> <span class="nx">config</span><span class="p">.</span><span class="nx">layout</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="c1">//create a new appender instance</span>
+  <span class="k">return</span> <span class="nx">stdoutAppender</span><span class="p">(</span><span class="nx">layout</span><span class="p">,</span> <span class="nx">config</span><span class="p">.</span><span class="nx">timezoneOffset</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">//export the only function needed</span>
+<span class="nx">exports</span><span class="p">.</span><span class="nx">configure</span> <span class="o">=</span> <span class="nx">configure</span><span class="p">;</span>
+</code></pre>
+</div>
+
+<h1 id="shutdown-functions">Shutdown functions</h1>
+
+<p>It’s a good idea to implement a <code class="highlighter-rouge">shutdown</code> function on your appender instances. This function will get called by <code class="highlighter-rouge">log4js.shutdown</code> and signals that <code class="highlighter-rouge">log4js</code> has been asked to stop logging. Usually this is because of a fatal exception, or the application is being stopped. Your shutdown function should make sure that all asynchronous operations finish, and that any resources are cleaned up. The function must be named <code class="highlighter-rouge">shutdown</code>, take one callback argument, and be a property of the appender instance. Let’s add a shutdown function to the <code class="highlighter-rouge">stdout</code> appender as an example.</p>
+
+<h2 id="example-shutdown">Example (shutdown)</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// This is the function that generates an appender function</span>
+<span class="kd">function</span> <span class="nx">stdoutAppender</span><span class="p">(</span><span class="nx">layout</span><span class="p">,</span> <span class="nx">timezoneOffset</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// This is the appender function itself</span>
+  <span class="kr">const</span> <span class="nx">appender</span> <span class="o">=</span> <span class="p">(</span><span class="nx">loggingEvent</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">process</span><span class="p">.</span><span class="nx">stdout</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">layout</span><span class="p">(</span><span class="nx">loggingEvent</span><span class="p">,</span> <span class="nx">timezoneOffset</span><span class="p">)}</span><span class="err">\</span><span class="nx">n</span><span class="err">`</span><span class="p">);</span>
+  <span class="p">};</span>
+
+  <span class="c1">// add a shutdown function.</span>
+  <span class="nx">appender</span><span class="p">.</span><span class="nx">shutdown</span> <span class="o">=</span> <span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">process</span><span class="p">.</span><span class="nx">stdout</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">''</span><span class="p">,</span> <span class="nx">done</span><span class="p">);</span>
+  <span class="p">};</span>
+
+  <span class="k">return</span> <span class="nx">appender</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// ... rest of the code as above</span>
+</code></pre>
+</div>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

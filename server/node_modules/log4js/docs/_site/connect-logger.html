@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="connect--express-logger">Connect / Express Logger</h1>
+
+<p>The connect/express logger was added to log4js by <a href="https://github.com/danbell">danbell</a>. This allows connect/express servers to log using log4js. See <code class="highlighter-rouge">example-connect-logger.js</code>.</p>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">log4js</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./lib/log4js'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'express'</span><span class="p">);</span>
+
+<span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+ <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+   <span class="na">console</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'console'</span> <span class="p">},</span>
+   <span class="na">file</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'file'</span><span class="p">,</span> <span class="na">filename</span><span class="p">:</span> <span class="s1">'cheese.log'</span> <span class="p">}</span>
+ <span class="p">},</span>
+ <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+   <span class="na">cheese</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'file'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">},</span>
+   <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'console'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span>
+ <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">(</span><span class="s1">'cheese'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">log4js</span><span class="p">.</span><span class="nx">connectLogger</span><span class="p">(</span><span class="nx">logger</span><span class="p">,</span> <span class="p">{</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}));</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s1">'hello world'</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">5000</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<p>The log4js.connectLogger supports the passing of an options object that can be used to set the following:</p>
+<ul>
+  <li>log level</li>
+  <li>log format string (the same as the connect/express logger)</li>
+  <li>nolog expressions (represented as a string, regexp, or array)</li>
+</ul>
+
+<p>The options object that is passed to log4js.connectLogger supports a format string the same as the connect/express logger. For example:</p>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">log4js</span><span class="p">.</span><span class="nx">connectLogger</span><span class="p">(</span><span class="nx">logger</span><span class="p">,</span> <span class="p">{</span> <span class="na">level</span><span class="p">:</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">levels</span><span class="p">.</span><span class="nx">INFO</span><span class="p">,</span> <span class="na">format</span><span class="p">:</span> <span class="s1">':method :url'</span> <span class="p">}));</span>
+</code></pre>
+</div>
+
+<p>Added automatic level detection to connect-logger, depends on http status response, compatible with express 3.x and 4.x.</p>
+
+<ul>
+  <li>http responses 3xx, level = WARN</li>
+  <li>http responses 4xx &amp; 5xx, level = ERROR</li>
+  <li>else, level = INFO</li>
+</ul>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">log4js</span><span class="p">.</span><span class="nx">connectLogger</span><span class="p">(</span><span class="nx">logger</span><span class="p">,</span> <span class="p">{</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'auto'</span> <span class="p">}));</span>
+</code></pre>
+</div>
+
+<p>The log4js.connectLogger also supports a nolog option where you can specify a string, regexp, or array to omit certain log messages. Example of 1.2 below.</p>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">log4js</span><span class="p">.</span><span class="nx">connectLogger</span><span class="p">(</span><span class="nx">logger</span><span class="p">,</span> <span class="p">{</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'auto'</span><span class="p">,</span> <span class="na">format</span><span class="p">:</span> <span class="s1">':method :url'</span><span class="p">,</span> <span class="na">nolog</span><span class="p">:</span> <span class="s1">'\\.gif|\\.jpg$'</span> <span class="p">}));</span>
+</code></pre>
+</div>
+
+<h2 id="example-nolog-values">Example nolog values</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>nolog value</th>
+      <th>Will Not Log</th>
+      <th>Will Log</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">"\\.gif"</code></td>
+      <td>http://example.com/hoge.gif http://example.com/hoge.gif?fuga</td>
+      <td>http://example.com/hoge.agif</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">"\\.gif\|\\.jpg$"</code></td>
+      <td>http://example.com/hoge.gif http://example.com/hoge.gif?fuga http://example.com/hoge.jpg?fuga</td>
+      <td>http://example.com/hoge.agif http://example.com/hoge.ajpg http://example.com/hoge.jpg?hoge</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">"\\.(gif\|jpe?g\|png)$"</code></td>
+      <td>http://example.com/hoge.gif http://example.com/hoge.jpeg</td>
+      <td>http://example.com/hoge.gif?uid=2 http://example.com/hoge.jpg?pid=3</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">/\.(gif\|jpe?g\|png)$/</code></td>
+      <td>as above</td>
+      <td>as above</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">["\\.jpg$", "\\.png", "\\.gif"]</code></td>
+      <td>same as <code class="highlighter-rouge">"\\.jpg\|\\.png\|\\.gif"</code></td>
+      <td>same as <code class="highlighter-rouge">"\\.jpg\|\\.png\|\\.gif"</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

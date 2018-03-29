@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="recording-appender">Recording Appender</h1>
+
+<p>This appender stores the log events in memory. It is mainly useful for testing (see the tests for the category filter, for instance).</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">recording</code></li>
+</ul>
+
+<p>There is no other configuration for this appender.</p>
+
+<h2 id="usage">Usage</h2>
+
+<p>The array that stores log events is shared across all recording appender instances, and is accessible from the recording module. <code class="highlighter-rouge">require('&lt;LOG4JS LIB DIR&gt;/appenders/recording')</code> returns a module with the following functions exported:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">replay</code> - returns <code class="highlighter-rouge">Array&lt;LogEvent&gt;</code> - get all the events recorded.</li>
+  <li><code class="highlighter-rouge">playback</code> - synonym for <code class="highlighter-rouge">replay</code></li>
+  <li><code class="highlighter-rouge">reset</code> - clears the array of events recorded.</li>
+  <li><code class="highlighter-rouge">erase</code> - synonyms for <code class="highlighter-rouge">reset</code></li>
+</ul>
+
+<h2 id="example">Example</h2>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">recording</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'../lib/appenders/recording'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">log4js</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'../lib/log4js'</span><span class="p">);</span>
+<span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span> <span class="na">vcr</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'recording'</span> <span class="p">}</span> <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'vcr'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">();</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s2">"some log event"</span><span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">events</span> <span class="o">=</span> <span class="nx">recording</span><span class="p">.</span><span class="nx">replay</span><span class="p">();</span> <span class="c1">// events is an array of LogEvent objects.</span>
+<span class="nx">recording</span><span class="p">.</span><span class="nx">erase</span><span class="p">();</span> <span class="c1">// clear the appender's array.</span>
+</code></pre>
+</div>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "ybserver",
+  "version": "1.0.0",
+  "description": "A server for ybgame",
+  "main": "./account_server/app.js",
+  "scripts": {
+    "account":"node config.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Songjiaqi",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "fibers": "^2.0.0",
+    "log4js": "^2.4.1",
+    "mysql": "^2.15.0",
+    "socket.io": "^2.0.4"
+  }
+}

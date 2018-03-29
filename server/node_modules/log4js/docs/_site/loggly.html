@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="loggly-appender">Loggly Appender</h1>
+
+<p>Sends logging events to <a href="https://www.loggly.com">Loggly</a>, optionally adding tags. This appender uses <a href="https://www.npmjs.com/package/loggly">node-loggly</a>, and you will need to include that in your dependencies if you want to use this appender. Consult the docs for node-loggly, or loggly itself, if you want more information on the configuration options below.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">loggly</code></li>
+  <li><code class="highlighter-rouge">token</code> - <code class="highlighter-rouge">string</code> - your really long input token</li>
+  <li><code class="highlighter-rouge">subdomain</code> - <code class="highlighter-rouge">string</code> - your subdomain</li>
+  <li><code class="highlighter-rouge">tags</code> - <code class="highlighter-rouge">Array&lt;string&gt;</code> (optional) - tags to include in every log message</li>
+</ul>
+
+<p>This appender will scan the msg from the logging event, and pull out any argument of the
+shape <code class="highlighter-rouge"><span class="p">{</span><span class="w"> </span><span class="err">tags:</span><span class="w"> </span><span class="err">[]</span><span class="w"> </span><span class="p">}</span></code> so that it’s possible to add additional tags in a normal logging call. See the example below.</p>
+
+<h2 id="example">Example</h2>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">loggly</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'loggly'</span><span class="p">,</span>
+      <span class="na">token</span><span class="p">:</span> <span class="s1">'somethinglong'</span><span class="p">,</span>
+      <span class="na">subdomain</span><span class="p">:</span> <span class="s1">'your.subdomain'</span><span class="p">,</span>
+      <span class="na">tags</span><span class="p">:</span> <span class="p">[</span> <span class="s1">'tag1'</span> <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'loggly'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">();</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">({</span> <span class="na">tags</span><span class="p">:</span> <span class="p">[</span><span class="s1">'my-tag-1'</span><span class="p">,</span> <span class="s1">'my-tag-2'</span><span class="p">]</span> <span class="p">},</span> <span class="s1">'Some message'</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<p>This will result in a log message being sent to loggly with the tags <code class="highlighter-rouge">tag1</code>, <code class="highlighter-rouge">my-tag-1</code>, <code class="highlighter-rouge">my-tag-2</code>.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

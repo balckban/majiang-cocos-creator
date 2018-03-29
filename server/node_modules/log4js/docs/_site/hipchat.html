@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="hipchat-appender">Hipchat Appender</h1>
+
+<p>The hipchat appender will send every log message it receives to a <a href="http://www.hipchat.com">hipchat</a> server, over HTTP. It uses the <a href="https://www.npmjs.com/package/hipchat-notifier">hipchat-notifier</a> library, and you will need to include that in your dependencies if you want to use this appender. If you’re not sure what some of the configuration options below mean, then check the documentation for hipchat-notifier, and the hipchat docs themselves.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">hipchat</code></li>
+  <li><code class="highlighter-rouge">hipchat_token</code> - <code class="highlighter-rouge">string</code> - User token with notification privileges</li>
+  <li><code class="highlighter-rouge">hipchat_room</code> - <code class="highlighter-rouge">string</code> - Room ID or name</li>
+  <li><code class="highlighter-rouge">hipchat_from</code> - <code class="highlighter-rouge">string</code> (optional, defaults to empty string) - a label to say where the message is from</li>
+  <li><code class="highlighter-rouge">hipchat_notify</code> - <code class="highlighter-rouge">boolean</code> (optional, defaults to <code class="highlighter-rouge">false</code>) - make hipchat annoy people</li>
+  <li><code class="highlighter-rouge">hipchat_host</code> - <code class="highlighter-rouge">string</code> (optional, defaults to <code class="highlighter-rouge">api.hipchat.com</code>) - set this if you have your own hipchat server</li>
+  <li><code class="highlighter-rouge">hipchat_response_callback</code> - <code class="highlighter-rouge">function</code> (optional, defaults to only throwing errors) - implement this function if you want intercept the responses from hipchat</li>
+  <li><code class="highlighter-rouge">layout</code> - (optional, defaults to <code class="highlighter-rouge">messagePassThroughLayout</code>)  - see <a href="/layouts.html">layouts</a></li>
+</ul>
+
+<h2 id="example-default-config">Example (default config)</h2>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">squawk</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'hipchat'</span><span class="p">,</span> <span class="na">hipchat_token</span><span class="p">:</span> <span class="s1">'abc123'</span><span class="p">,</span> <span class="na">hipchat_room</span><span class="p">:</span> <span class="s1">'ops'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'squawk'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'error'</span><span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>This will result in all error (and above) messages being sent to the hipchat room “ops”.</p>
+
+<h1 id="example-use-all-the-options">Example (use all the options!)</h1>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">squawk</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'hipchat'</span><span class="p">,</span>
+      <span class="na">hipchat_token</span><span class="p">:</span> <span class="s1">'abc123'</span><span class="p">,</span>
+      <span class="na">hipchat_room</span><span class="p">:</span> <span class="s1">'things_are_on_fire'</span><span class="p">,</span>
+      <span class="na">hipchat_from</span><span class="p">:</span> <span class="s1">'Hal9000'</span><span class="p">,</span>
+      <span class="na">hipchat_notify</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="na">hipchat_host</span><span class="p">:</span> <span class="s1">'hipchat.yourorganisation.com'</span><span class="p">,</span>
+      <span class="na">hipchat_response_callback</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"I got a response from hipchat: "</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'squawk'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

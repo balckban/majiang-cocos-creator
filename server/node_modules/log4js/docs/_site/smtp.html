@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="smtp-appender">SMTP Appender</h1>
+
+<p>Sends log events as emails. To use this appender you will need to include the <a href="https://www.npmjs.com/package/nodemailer">nodemailer</a> package in your dependencies. If you use this appender, you should also call <code class="highlighter-rouge">log4js.shutdown</code> when your application closes so that any remaining emails can be sent. Many of the configuration options below are passed through to nodemailer, so you should read their docs to get the most out of this appender.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">smtp</code></li>
+  <li><code class="highlighter-rouge">SMTP</code> - <code class="highlighter-rouge">object</code> (optional, if not present will use <code class="highlighter-rouge">transport</code> field)
+    <ul>
+      <li><code class="highlighter-rouge">host</code> - <code class="highlighter-rouge">string</code> (optional, defaults to <code class="highlighter-rouge">localhost</code>)</li>
+      <li><code class="highlighter-rouge">port</code> - <code class="highlighter-rouge">integer</code> (optional, defaults to <code class="highlighter-rouge">25</code>)</li>
+      <li><code class="highlighter-rouge">auth</code> - <code class="highlighter-rouge">object</code> (optional) - authentication details
+        <ul>
+          <li><code class="highlighter-rouge">user</code> - <code class="highlighter-rouge">string</code></li>
+          <li><code class="highlighter-rouge">pass</code> - <code class="highlighter-rouge">string</code></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">transport</code> - <code class="highlighter-rouge">object</code> (optional, if not present will use <code class="highlighter-rouge">SMTP</code>) - see nodemailer docs for transport options
+    <ul>
+      <li><code class="highlighter-rouge">plugin</code> - <code class="highlighter-rouge">string</code> (optional, defaults to <code class="highlighter-rouge">smtp</code>) - the nodemailer transport plugin to use</li>
+      <li><code class="highlighter-rouge">options</code> - <code class="highlighter-rouge">object</code> - configuration for the transport plugin</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">attachment</code> - <code class="highlighter-rouge">object</code> (optional) - send logs as email attachment
+    <ul>
+      <li><code class="highlighter-rouge">enable</code> - <code class="highlighter-rouge">boolean</code> (optional, defaults to <code class="highlighter-rouge">false</code>)</li>
+      <li><code class="highlighter-rouge">message</code> - <code class="highlighter-rouge">string</code> (optional, defaults to <code class="highlighter-rouge">See logs as attachment</code>) - message to put in body of email</li>
+      <li><code class="highlighter-rouge">filename</code> - <code class="highlighter-rouge">string</code> (optional, defaults to <code class="highlighter-rouge">default.log</code>) - attachment filename</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">sendInterval</code> - <code class="highlighter-rouge">integer</code> (optional, defaults to <code class="highlighter-rouge">0</code>) - batch emails and send in one email every <code class="highlighter-rouge">sendInterval</code> seconds, if <code class="highlighter-rouge">0</code> then every log message will send an email.</li>
+  <li><code class="highlighter-rouge">shutdownTimeout</code> - <code class="highlighter-rouge">integer</code> (optional, defaults to <code class="highlighter-rouge">5</code>) - time in seconds to wait for emails to be sent during shutdown</li>
+  <li><code class="highlighter-rouge">recipients</code> - <code class="highlighter-rouge">string</code> - email addresses to send the logs to</li>
+  <li><code class="highlighter-rouge">subject</code> - <code class="highlighter-rouge">string</code> (optional, defaults to message from first log event in batch) - subject for email</li>
+  <li><code class="highlighter-rouge">sender</code> - <code class="highlighter-rouge">string</code> (optional) - who the logs should be sent as</li>
+  <li><code class="highlighter-rouge">html</code> - <code class="highlighter-rouge">boolean</code> (optional, defaults to <code class="highlighter-rouge">false</code>) - send the email as HTML instead of plain text</li>
+  <li><code class="highlighter-rouge">layout</code> - <code class="highlighter-rouge">object</code> (optional, defaults to basicLayout) - see <a href="/layouts.html">layouts</a></li>
+</ul>
+
+<h2 id="example-default-config">Example (default config)</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">'email'</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'smtp'</span><span class="p">,</span> <span class="na">recipients</span><span class="p">:</span> <span class="s1">'dev.team@company.name'</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span> <span class="s1">'email'</span> <span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'error'</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>This configuration will send an email using the smtp server running on <code class="highlighter-rouge">localhost:25</code>, for every log event of level <code class="highlighter-rouge">ERROR</code> and above. The email will be sent to <code class="highlighter-rouge">dev.team@company.name</code>, the subject will be the message part of the log event, the body of the email will be log event formatted by the basic layout function.</p>
+
+<h2 id="example-logs-as-attachments-batched">Example (logs as attachments, batched)</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">'email'</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'smtp'</span><span class="p">,</span>
+      <span class="na">recipients</span><span class="p">:</span> <span class="s1">'dev.team@company.name'</span><span class="p">,</span>
+      <span class="na">subject</span><span class="p">:</span> <span class="s1">'Latest logs'</span><span class="p">,</span>
+      <span class="na">sender</span><span class="p">:</span> <span class="s1">'my.application@company.name'</span><span class="p">,</span>
+      <span class="na">attachments</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">enable</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="na">filename</span><span class="p">:</span> <span class="s1">'latest.log'</span><span class="p">,</span>
+        <span class="na">message</span><span class="p">:</span> <span class="s1">'See the attachment for the latest logs'</span>
+      <span class="p">},</span>
+      <span class="na">sendInterval</span><span class="p">:</span> <span class="mi">3600</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'email'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'ERROR'</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>This configuration will send an email once every hour, with all the log events of level ‘ERROR’ and above as an attached file.</p>
+
+<h2 id="example-custom-smtp-host">Example (custom SMTP host)</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">email</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'smtp'</span><span class="p">,</span> <span class="na">smtp</span><span class="p">:</span> <span class="p">{</span> <span class="na">host</span><span class="p">:</span> <span class="s1">'smtp.company.name'</span><span class="p">,</span> <span class="na">port</span><span class="p">:</span> <span class="mi">8025</span> <span class="p">},</span> <span class="na">recipients</span><span class="p">:</span> <span class="s1">'dev.team@company.name'</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'email'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>This configuration can also be written as:</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">email</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'smtp'</span><span class="p">,</span>
+      <span class="na">transport</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">plugin</span><span class="p">:</span> <span class="s1">'smtp'</span><span class="p">,</span>
+        <span class="na">options</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">host</span><span class="p">:</span> <span class="s1">'smtp.company.name'</span><span class="p">,</span>
+          <span class="na">port</span><span class="p">:</span> <span class="mi">8025</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="na">recipients</span><span class="p">:</span> <span class="s1">'dev.team@company.name'</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'email'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>A similar config can be used to specify a different transport plugin than <code class="highlighter-rouge">smtp</code>. See the nodemailer docs for more details.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="logfaces-appender-udp">logFaces Appender (UDP)</h1>
+
+<p>The logFaces appenders send JSON formatted log events to <a href="http://www.moonlit-software.com">logFaces</a> receivers. This appender uses UDP to send the events (there is another logFaces appender that uses <a href="/logFaces-HTTP.html">HTTP</a>). It uses the node.js core UDP support, so you do not need to include any other dependencies.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">logFaces-UDP</code></li>
+  <li><code class="highlighter-rouge">remoteHost</code> - <code class="highlighter-rouge">string</code> (optional, defaults to ‘127.0.0.1’)- hostname or IP address of the logFaces receiver</li>
+  <li><code class="highlighter-rouge">port</code> - <code class="highlighter-rouge">integer</code> (optional, defaults to 55201) - port the logFaces receiver is listening on</li>
+  <li><code class="highlighter-rouge">application</code> - <code class="highlighter-rouge">string</code> (optional, defaults to empty string) - used to identify your application’s logs</li>
+</ul>
+
+<p>This appender will also pick up Logger context values from the events, and add them as <code class="highlighter-rouge">p_</code> values in the logFaces event. See the example below for more details.</p>
+
+<h1 id="example-default-config">Example (default config)</h1>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">logfaces</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'logFaces-UDP'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span> <span class="s1">'logfaces'</span> <span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">();</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">addContext</span><span class="p">(</span><span class="s1">'requestId'</span><span class="p">,</span> <span class="s1">'123'</span><span class="p">);</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">'some interesting log message'</span><span class="p">);</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'something has gone wrong'</span><span class="p">);</span>
+</code></pre>
+</div>
+<p>This example will result in two log events being sent via UDP to <code class="highlighter-rouge">127.0.0.1:55201</code>. Both events will have a <code class="highlighter-rouge">p_requestId</code> property with a value of <code class="highlighter-rouge">123</code>.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

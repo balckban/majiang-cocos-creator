@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="gelf-appender">GELF appender</h1>
+
+<p>The GELF appender supports sending log messages over UDP to a <a href="http://docs.graylog.org/en/2.2/pages/gelf.html">GELF</a> compatible server such as <a href="https://www.graylog.org">Graylog</a>. It uses node’s core UDP support and does not require any other dependencies. If you use this appender, remember to call <code class="highlighter-rouge">log4js.shutdown</code> when your application terminates, so that all messages will have been sent to the server and the UDP socket can be closed. The appender supports passing custom fields to the server in both the config, and in individual log messages (see examples below).</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">gelf</code></li>
+  <li><code class="highlighter-rouge">host</code> - <code class="highlighter-rouge">string</code> (defaults to <code class="highlighter-rouge">localhost</code>) - the gelf server hostname</li>
+  <li><code class="highlighter-rouge">port</code> - <code class="highlighter-rouge">integer</code> (defaults to <code class="highlighter-rouge">12201</code>) - the port the gelf server is listening on</li>
+  <li><code class="highlighter-rouge">hostname</code> - <code class="highlighter-rouge">string</code> (defaults to <code class="highlighter-rouge">OS.hostname()</code>) - the hostname used to identify the origin of the log messages.</li>
+  <li><code class="highlighter-rouge">facility</code> - <code class="highlighter-rouge">string</code> (optional)</li>
+  <li><code class="highlighter-rouge">customFields</code> - <code class="highlighter-rouge">object</code> (optional) - fields to be added to each log message; custom fields must start with an underscore.</li>
+</ul>
+
+<h2 id="example-default-config">Example (default config)</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">gelf</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'gelf'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'gelf'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>This will send log messages to a server at <code class="highlighter-rouge">localhost:12201</code>.</p>
+
+<h2 id="example-custom-fields-in-config">Example (custom fields in config)</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">gelf</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'gelf'</span><span class="p">,</span> <span class="na">host</span><span class="p">:</span> <span class="s1">'gelf.server'</span><span class="p">,</span> <span class="na">customFields</span><span class="p">:</span> <span class="p">{</span> <span class="s1">'_something'</span><span class="p">:</span> <span class="s1">'yep'</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'gelf'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>This will result in all log messages having the custom field <code class="highlighter-rouge">_something</code> set to ‘yep’.</p>
+
+<h1 id="example-custom-fields-in-log-message">Example (custom fields in log message)</h1>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">gelf</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'gelf'</span><span class="p">,</span> <span class="na">customFields</span><span class="p">:</span> <span class="p">{</span> <span class="s1">'_thing'</span><span class="p">:</span> <span class="s1">'isathing'</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'gelf'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">();</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">error</span><span class="p">({</span> <span class="na">GELF</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="na">_thing2</span><span class="p">:</span> <span class="s1">'alsoathing'</span> <span class="p">},</span> <span class="s1">'oh no, something went wrong'</span><span class="p">);</span>
+</code></pre>
+</div>
+<p>This will result in a log message with the custom fields <code class="highlighter-rouge">_thing</code> and <code class="highlighter-rouge">_thing2</code>. Note that log message custom fields will override config custom fields.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

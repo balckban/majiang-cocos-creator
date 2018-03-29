@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="log4js-node">log4js-node</h1>
+
+<p>This is a conversion of the <a href="https://github.com/stritti/log4js">log4js</a>
+framework to work with <a href="http://nodejs.org">node</a>. I started out just stripping out the browser-specific code and tidying up some of the javascript to work better in node. It grew from there. Although it’s got a similar name to the Java library <a href="https://logging.apache.org/log4j/2.x/">log4j</a>, thinking that it will behave the same way will only bring you sorrow and confusion.</p>
+
+<h2 id="migrating-from-log4js--v2x">Migrating from log4js &lt; v2.x?</h2>
+
+<p>There have been a few changes between log4js 1.x and 2.x (and 0.x too). You should probably read this <a href="/migration-guide.html">migration guide</a> if things aren’t working.</p>
+
+<h2 id="features">Features</h2>
+
+<ul>
+  <li>coloured console logging to <a href="/stdout.html">stdout</a> or <a href="/stderr.html">stderr</a></li>
+  <li><a href="/file.html">file appender</a>, with configurable log rolling based on file size or <a href="/dateFile.html">date</a></li>
+  <li><a href="/smtp.html">SMTP appender</a></li>
+  <li><a href="/gelf.html">GELF appender</a></li>
+  <li><a href="/loggly.html">Loggly appender</a></li>
+  <li><a href="/logstashUDP.html">Logstash UDP appender</a></li>
+  <li>logFaces (<a href="/logFaces-UDP.html">UDP</a> and <a href="/logFaces-HTTP.html">HTTP</a>) appender</li>
+  <li><a href="/multiprocess.html">multiprocess appender</a> (useful when you’ve got multiple servers but want to centralise logging)</li>
+  <li>a <a href="/connect-logger.html">logger for connect/express</a> servers</li>
+  <li>configurable log message <a href="/layouts.html">layout/patterns</a></li>
+  <li>different log levels for different log categories (make some parts of your app log as DEBUG, others only ERRORS, etc.)</li>
+  <li>built-in support for logging with node core’s <code class="highlighter-rouge">cluster</code> module</li>
+</ul>
+
+<h2 id="installation">Installation</h2>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>npm install log4js
+</code></pre>
+</div>
+
+<h2 id="usage">Usage</h2>
+
+<p>Minimalist version:</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">log4js</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'log4js'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">();</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">level</span> <span class="o">=</span> <span class="s1">'debug'</span><span class="p">;</span> <span class="c1">// default level is OFF - which means no logs at all.</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="s2">"Some debug messages"</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<h2 id="note-for-library-makers">Note for library makers</h2>
+
+<p>If you’re writing a library and would like to include support for log4js, without introducing a dependency headache for your users, take a look at <a href="https://github.com/log4js-node/log4js-api">log4js-api</a>.</p>
+
+<h2 id="license">License</h2>
+
+<p>The original log4js was distributed under the Apache 2.0 License, and so is this. I’ve tried to
+keep the original copyright and author credits in place, except in sections that I have rewritten
+extensively.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

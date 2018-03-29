@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="migrating-from-log4js-versions-older-than-2x">Migrating from log4js versions older than 2.x</h1>
+
+<h2 id="configuration">Configuration</h2>
+<p>If you try to use your v1 configuration with v2 code, you’ll most likely get an error that says something like ‘must have property “appenders” of type object’. The format of the configuration object has changed (see the <a href="/api.html">api</a> docs for details). The main changes are a need for you to name your appenders, and you also have to define the default category. For example, if your v1 config looked like this:</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="p">{</span> <span class="nl">appenders</span><span class="p">:</span> <span class="p">[</span>
+  <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'console'</span> <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="s1">'dateFile'</span><span class="p">,</span>
+    <span class="na">filename</span><span class="p">:</span> <span class="s1">'logs/task'</span><span class="p">,</span>
+    <span class="na">pattern</span><span class="p">:</span><span class="s2">"-dd.log"</span><span class="p">,</span>
+    <span class="na">alwaysIncludePattern</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">category</span><span class="p">:</span> <span class="s1">'task'</span>
+  <span class="p">}</span>
+<span class="p">]</span> <span class="p">}</span>
+</code></pre>
+</div>
+<p>Then your v2 config should be something like this:</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">out</span><span class="p">:</span> <span class="p">{</span> <span class="nl">type</span><span class="p">:</span> <span class="s1">'console'</span> <span class="p">},</span>
+    <span class="nx">tasks</span><span class="err">:</span> <span class="p">{</span>
+      <span class="nl">type</span><span class="p">:</span> <span class="s1">'dateFile'</span><span class="p">,</span>
+      <span class="nx">filename</span><span class="err">:</span> <span class="s1">'logs/task'</span><span class="p">,</span>
+      <span class="nx">pattern</span><span class="err">:</span> <span class="s1">'-dd.log'</span><span class="p">,</span>
+      <span class="nx">alwaysIncludePattern</span><span class="err">:</span> <span class="kc">true</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">categories</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nl">default</span><span class="p">:</span> <span class="p">{</span> <span class="nl">appenders</span><span class="p">:</span> <span class="p">[</span> <span class="s1">'out'</span> <span class="p">],</span> <span class="nx">level</span><span class="err">:</span> <span class="s1">'info'</span> <span class="p">},</span>
+    <span class="nx">task</span><span class="err">:</span> <span class="p">{</span> <span class="nl">appenders</span><span class="p">:</span> <span class="p">[</span> <span class="s1">'task'</span> <span class="p">],</span> <span class="nx">level</span><span class="err">:</span> <span class="s1">'info'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}}</span>
+</code></pre>
+</div>
+
+<p>The functions to define the configuration programmatically have been remove (<code class="highlighter-rouge">addAppender</code>, <code class="highlighter-rouge">loadAppender</code>, etc). All configuration should now be done through the single <code class="highlighter-rouge">configure</code> function, passing in a filename or object.</p>
+
+<h2 id="console-replacement">Console replacement</h2>
+<p>V1 used to allow you to replace the node.js console functions with versions that would log to a log4js appender. This used to cause some weird errors, so I decided it was better to remove it from the log4js core functionality. If you still want to do this, you can replicate the behaviour with code similar to this:</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">(...);</span> <span class="c1">// set up your categories and appenders</span>
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">(</span><span class="s1">'console'</span><span class="p">);</span> <span class="c1">// any category will work</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="o">=</span> <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">logger</span><span class="p">);</span> <span class="c1">// do the same for others - console.debug, etc.</span>
+</code></pre>
+</div>
+
+<h2 id="config-reloading">Config Reloading</h2>
+<p>Previous versions of log4js used to watch for changes in the configuration file and reload when it changed. It didn’t always work well, sometimes leaving file handles or sockets open. This feature was removed in version 2.x. As a replacement, I’d suggest using a library like <a href="https://www.npmjs.com/package/watchr">watchr</a> to notify you of file changes. Then you can call <code class="highlighter-rouge">log4js.shutdown</code> followed by <code class="highlighter-rouge">log4js.configure</code> again.</p>
+
+<h2 id="appenders">Appenders</h2>
+<p>If you have written your own custom appenders, they will not work without modification in v2. See the guide to <a href="/writing-appenders.html">writing appenders</a> for details on how appenders work in 2.x. Note that if you want to write your appender to work with both 1.x and 2.x, then you can tell what version you’re running in by examining the number of arguments passed to the <code class="highlighter-rouge">configure</code> function of your appender: 2 arguments means v1, 4 arguments means v2.</p>
+
+<p>All the core appenders have been upgraded to work with v2, except for the clustered appender which has been removed. The core log4js code handles cluster mode transparently.</p>
+
+<p>The <code class="highlighter-rouge">logFaces</code> appender was split into two versions to make testing easier and the code simpler; one has HTTP support, the other UDP.</p>
+
+<h2 id="exit-listeners">Exit listeners</h2>
+<p>Some appenders used to define their own <code class="highlighter-rouge">exit</code> listeners, and it was never clear whose responsibility it was to clean up resources. Now log4js does not define any <code class="highlighter-rouge">exit</code> listeners. Instead your application should register an <code class="highlighter-rouge">exit</code> listener, and call <code class="highlighter-rouge">log4js.shutdown</code> to be sure that all log messages get written before your application terminates.</p>
+
+<h2 id="new-features">New Features</h2>
+<ul>
+  <li>MDC contexts - you can now add key-value pairs to a logger (for grouping all log messages from a particular user, for example). Support for these values exists in the <a href="/layouts.html">pattern layout</a>, the <a href="/logFaces-UDP.html">logFaces appenders</a>, and the <a href="/multiFile.html">multi-file appender</a>.</li>
+  <li>Automatic cluster support - log4js now handles clusters transparently</li>
+  <li>Custom levels - you can define your own log levels in the configuration object, including the colours</li>
+  <li>Improved performance - several changes have been made to improve performance, especially for the file appenders.</li>
+</ul>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

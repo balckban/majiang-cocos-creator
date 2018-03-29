@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="log4js---appenders">Log4js - Appenders</h1>
+
+<p>Appenders serialise log events to some form of output. They can write to files, send emails, send data over the network. All appenders have a <code class="highlighter-rouge">type</code> which determines which appender gets used. For example:</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">log4js</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'log4js'</span><span class="p">);</span>
+<span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">out</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'stdout'</span> <span class="p">},</span>
+    <span class="na">app</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'file'</span><span class="p">,</span> <span class="na">filename</span><span class="p">:</span> <span class="s1">'application.log'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span> <span class="s1">'out'</span><span class="p">,</span> <span class="s1">'app'</span> <span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'debug'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>This defines two appenders named ‘out’ and ‘app’. ‘out’ uses the <a href="/stdout.html">stdout</a> appender which writes to standard out. ‘app’ uses the <a href="/file.html">file</a> appender, configured to write to ‘application.log’.</p>
+
+<h2 id="core-appenders">Core Appenders</h2>
+
+<p>The following appenders are included with log4js. Some require extra dependencies that are not included as part of log4js (the <a href="/smtp.html">smtp</a> appender needs <a href="https://www.npmjs.org/packages/nodemailer">nodemailer</a> for example), and these will be noted in the docs for that appender. If you don’t use those appenders, then you don’t need the extra dependencies.</p>
+
+<ul>
+  <li><a href="/categoryFilter.html">categoryFilter</a></li>
+  <li><a href="/console.html">console</a></li>
+  <li><a href="/dateFile.html">dateFile</a></li>
+  <li><a href="/file.html">file</a></li>
+  <li><a href="/fileSync.html">fileSync</a></li>
+  <li><a href="/gelf.html">gelf</a></li>
+  <li><a href="/hipchat.html">hipchat</a></li>
+  <li><a href="/logFaces-HTTP.html">logFaces-HTTP</a></li>
+  <li><a href="/logFaces-UDP.html">logFaces-UDP</a></li>
+  <li><a href="/loggly.html">loggly</a></li>
+  <li><a href="/logLevelFilter.html">logLevelFilter</a></li>
+  <li><a href="/logstashUDP.html">logstashUDP</a></li>
+  <li><a href="/mailgun.html">mailgun</a></li>
+  <li><a href="/multiFile.html">multiFile</a></li>
+  <li><a href="/multiprocess.html">multiprocess</a></li>
+  <li><a href="/recording.html">recording</a></li>
+  <li><a href="/redis.html">redis</a></li>
+  <li><a href="/slack.html">slack</a></li>
+  <li><a href="/smtp.html">smtp</a></li>
+  <li><a href="/stderr.html">stderr</a></li>
+  <li><a href="/stdout.html">stdout</a></li>
+</ul>
+
+<h2 id="other-appenders">Other Appenders</h2>
+
+<p>Log4js can load appenders from outside the core appenders. The <code class="highlighter-rouge">type</code> config value is used as a require path if no matching appender can be found. For example, the following configuration will attempt to load an appender from the module ‘cheese/appender’, passing the rest of the config for the appender to that module:</p>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span> <span class="na">gouda</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'cheese/appender'</span><span class="p">,</span> <span class="na">flavour</span><span class="p">:</span> <span class="s1">'tasty'</span> <span class="p">}</span> <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span> <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'gouda'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'debug'</span> <span class="p">}}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>Log4js checks the following places (in this order) for appenders based on the type value:</p>
+<ol>
+  <li>The core appenders: <code class="highlighter-rouge">require('./appenders/' + type)</code></li>
+  <li>node_modules: <code class="highlighter-rouge">require(type)</code></li>
+  <li>relative to the main file of your application: <code class="highlighter-rouge">require(path.dirname(require.main.filename) + '/' + type)</code></li>
+  <li>relative to the process’ current working directory: <code class="highlighter-rouge">require(process.cwd() + '/' + type)</code></li>
+</ol>
+
+<p>If you want to write your own appender, read the <a href="/writing-appenders.html">documentation</a> first.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

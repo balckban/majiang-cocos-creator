@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="log-level-filter">Log Level Filter</h1>
+
+<p>The log level filter allows you to restrict the log events that an appender will record based on the level of those events. This is useful when you want most logs to go to a file, but errors to be sent as emails, for example. The filter works by wrapping around another appender and controlling which events get sent to it.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">logLevelFilter</code></li>
+  <li><code class="highlighter-rouge">appender</code> - <code class="highlighter-rouge">string</code> - the name of an appender, defined in the same configuration, that you want to filter</li>
+  <li><code class="highlighter-rouge">level</code> - <code class="highlighter-rouge">string</code> - the minimum level of event to allow through the filter</li>
+  <li><code class="highlighter-rouge">maxLevel</code> - <code class="highlighter-rouge">string</code> (optional, defaults to <code class="highlighter-rouge">FATAL</code>) - the maximum level of event to allow through the filter</li>
+</ul>
+
+<p>If an event’s level is greater than or equal to <code class="highlighter-rouge">level</code> and less than or equal to <code class="highlighter-rouge">maxLevel</code> then it will be sent to the appender.</p>
+
+<h2 id="example">Example</h2>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">everything</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'file'</span><span class="p">,</span> <span class="na">filename</span><span class="p">:</span> <span class="s1">'all-the-logs.log'</span> <span class="p">},</span>
+    <span class="na">emergencies</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'file'</span><span class="p">,</span> <span class="na">filename</span><span class="p">:</span> <span class="s1">'panic-now.log'</span> <span class="p">},</span>
+    <span class="nx">just</span><span class="o">-</span><span class="na">errors</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'logLevelFilter'</span><span class="p">,</span> <span class="na">appender</span><span class="p">:</span> <span class="s1">'emergencies'</span><span class="p">,</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'error'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'just-errors'</span><span class="p">,</span> <span class="s1">'everything'</span> <span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'debug'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>Log events of <code class="highlighter-rouge">debug</code>, <code class="highlighter-rouge">info</code>, <code class="highlighter-rouge">error</code>, and <code class="highlighter-rouge">fatal</code> will go to <code class="highlighter-rouge">all-the-logs.log</code>. Events of <code class="highlighter-rouge">error</code> and <code class="highlighter-rouge">fatal</code> will also go to <code class="highlighter-rouge">panic-now.log</code>.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

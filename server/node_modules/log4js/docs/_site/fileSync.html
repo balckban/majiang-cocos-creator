@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="synchronous-file-appender">Synchronous File Appender</h1>
+
+<p>The sync file appender writes log events to a file, the only difference to the normal file appender is that all the writes are synchronous. This can make writing tests easier, or in situations where you need an absolute guarantee that a log message has been written to the file. Making synchronous I/O calls does mean you lose a lot of the benefits of using node.js though. It supports an optional maximum file size, and will keep a configurable number of backups. Note that the synchronous file appender, unlike the asynchronous version, does not support compressing the backup files.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">"file"</code></li>
+  <li><code class="highlighter-rouge">filename</code> - <code class="highlighter-rouge">string</code> - the path of the file where you want your logs written.</li>
+  <li><code class="highlighter-rouge">maxLogSize</code> - <code class="highlighter-rouge">integer</code> (optional) - the maximum size (in bytes) for the log file. If not specified, then no log rolling will happen.</li>
+  <li><code class="highlighter-rouge">backups</code> - <code class="highlighter-rouge">integer</code> (optional, default value = 5) - the number of old log files to keep during log rolling.</li>
+  <li><code class="highlighter-rouge">layout</code> - (optional, defaults to basic layout) - see <a href="/layouts.html">layouts</a></li>
+</ul>
+
+<p>Any other configuration parameters will be passed to the underlying node.js core stream implementation:</p>
+<ul>
+  <li><code class="highlighter-rouge">encoding</code> - <code class="highlighter-rouge">string</code> (default “utf-8”)</li>
+  <li><code class="highlighter-rouge">mode</code>- <code class="highlighter-rouge">integer</code> (default 0644)</li>
+  <li><code class="highlighter-rouge">flags</code> - <code class="highlighter-rouge">string</code> (default ‘a’)</li>
+</ul>
+
+<h2 id="example">Example</h2>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">everything</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'fileSync'</span><span class="p">,</span> <span class="na">filename</span><span class="p">:</span> <span class="s1">'all-the-logs.log'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span> <span class="s1">'everything'</span> <span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'debug'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kr">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">log4js</span><span class="p">.</span><span class="nx">getLogger</span><span class="p">();</span>
+<span class="nx">logger</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="s1">'I will be logged in all-the-logs.log'</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<p>This example will result in a single log file (<code class="highlighter-rouge">all-the-logs.log</code>) containing the log messages.</p>
+
+<h2 id="example-with-log-rolling">Example with log rolling</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">everything</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'file'</span><span class="p">,</span> <span class="na">filename</span><span class="p">:</span> <span class="s1">'all-the-logs.log'</span><span class="p">,</span> <span class="na">maxLogSize</span><span class="p">:</span> <span class="mi">10458760</span><span class="p">,</span> <span class="na">backups</span><span class="p">:</span> <span class="mi">3</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span> <span class="s1">'everything'</span> <span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'debug'</span><span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>This will result in one current log file (<code class="highlighter-rouge">all-the-logs.log</code>). When that reaches 10Mb in size, it will be renamed and compressed to <code class="highlighter-rouge">all-the-logs.log.1.gz</code> and a new file opened called <code class="highlighter-rouge">all-the-logs.log</code>. When <code class="highlighter-rouge">all-the-logs.log</code> reaches 10Mb again, then <code class="highlighter-rouge">all-the-logs.log.1.gz</code> will be renamed to <code class="highlighter-rouge">all-the-logs.log.2.gz</code>, and so on.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

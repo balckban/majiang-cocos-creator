@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h2 id="api">API</h2>
+
+<h2 id="configuration---log4jsconfigureobject--string">configuration - <code class="highlighter-rouge">log4js.configure(object || string)</code></h2>
+
+<p>There is one entry point for configuring log4js. A string argument is treated as a filename to load configuration from. Config files should be JSON, and contain a configuration object (see format below). You can also pass a configuration object directly to <code class="highlighter-rouge">configure</code>.</p>
+
+<p>Configuration should take place immediately after requiring log4js for the first time in your application. If you do not call <code class="highlighter-rouge">configure</code>, log4js will use <code class="highlighter-rouge">LOG4JS_CONFIG</code> (if defined) or the default config. The default config defines one appender, which would log to stdout with the coloured layout, but also defines the default log level to be <code class="highlighter-rouge">OFF</code> - which means no logs will be output.</p>
+
+<p>If you are using <code class="highlighter-rouge">cluster</code>, then include the call to <code class="highlighter-rouge">configure</code> in the worker processes as well as the master. That way the worker processes will pick up the right levels for your categories, and any custom levels you may have defined. Appenders will only be defined on the master process, so there is no danger of multiple processes attempting to write to the same appender. No special configuration is needed to use log4js with clusters, unlike previous versions.</p>
+
+<p>Configuration objects must define at least one appender, and a default category. Log4js will throw an exception if the configuration is invalid.</p>
+
+<h3 id="configuration-object">Configuration Object</h3>
+<p>Properties:</p>
+<ul>
+  <li><code class="highlighter-rouge">levels</code> (optional, object) - used for defining custom log levels, or redefining existing ones; this is a map with the level name as the key (string, case insensitive), and an object as the value. The object should have two properties: the level value (integer) as the value, and the colour. Log levels are used to assign importance to log messages, with the integer value being used to sort them. If you do not specify anything in your configuration, the default values are used (ALL &lt; TRACE &lt; DEBUG &lt; INFO &lt; WARN &lt; ERROR &lt; FATAL &lt; MARK &lt; OFF - note that OFF is intended to be used to turn off logging, not as a level for actual logging, i.e. you would never call <code class="highlighter-rouge">logger.off('some log message')</code>). Levels defined here are used in addition to the default levels, with the integer value being used to determine their relation to the default levels. If you define a level with the same name as a default level, then the integer value in the config takes precedence. Level names must begin with a letter, and can only contain letters, numbers and underscores.</li>
+  <li><code class="highlighter-rouge">appenders</code> (object) - a map of named appenders (string) to appender definitions (object); appender definitions must have a property <code class="highlighter-rouge">type</code> (string) - other properties depend on the appender type.</li>
+  <li><code class="highlighter-rouge">categories</code> (object) - a map of named categories (string) to category definitions (object). You must define the <code class="highlighter-rouge">default</code> category which is used for all log events that do not match a specific category. Category definitions have two properties:
+    <ul>
+      <li><code class="highlighter-rouge">appenders</code> (array of strings) - the list of appender names to be used for this category. A category must have at least one appender.</li>
+      <li><code class="highlighter-rouge">level</code> (string, case insensitive) - the minimum log level that this category will send to the appenders. For example, if set to ‘error’ then the appenders will only receive log events of level ‘error’, ‘fatal’, ‘mark’ - log events of ‘info’, ‘warn’, ‘debug’, or ‘trace’ will be ignored.</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">pm2</code> (boolean) (optional) - set this to true if you’re running your app using <a href="http://pm2.keymetrics.io">pm2</a>, otherwise logs will not work (you’ll also need to install pm2-intercom)</li>
+  <li><code class="highlighter-rouge">pm2InstanceVar</code> (string) (optional, defaults to ‘NODE_APP_INSTANCE’) - set this if you’re using pm2 and have changed the default name of the NODE_APP_INSTANCE variable.</li>
+</ul>
+
+<h2 id="loggers---log4jsgetloggercategory">Loggers - <code class="highlighter-rouge">log4js.getLogger([category])</code></h2>
+
+<p>This function takes a single optional string argument to denote the category to be used for log events on this logger. If no category is specified, the events will be routed to the appender for the <code class="highlighter-rouge">default</code> category. The function returns a <code class="highlighter-rouge">Logger</code> object which has its level set to the level specified for that category in the config and implements the following functions:</p>
+<ul>
+  <li><code class="highlighter-rouge">&lt;level&gt;(args...)</code> - where <code class="highlighter-rouge">&lt;level&gt;</code> can be any of the lower case names of the levels (including any custom levels defined). For example: <code class="highlighter-rouge">logger.info('some info')</code> will dispatch a log event with a level of info.</li>
+  <li><code class="highlighter-rouge">is&lt;level&gt;Enabled()</code> - returns true if a log event of level <level> (camel case) would be dispatched to the appender defined for the logger's category. For example: `logger.isInfoEnabled()` will return true if the level for the logger is INFO or lower.</level></li>
+  <li><code class="highlighter-rouge">addContext(&lt;key&gt;,&lt;value&gt;)</code> - where <code class="highlighter-rouge">&lt;key&gt;</code> is a string, <code class="highlighter-rouge">&lt;value&gt;</code> can be anything. This stores a key-value pair that is added to all log events generated by the logger. Uses would be to add ids for tracking a user through your application. Currently only the <code class="highlighter-rouge">logFaces</code> appenders make use of the context values.</li>
+  <li><code class="highlighter-rouge">removeContext(&lt;key&gt;)</code>  - removes a previously defined key-value pair from the context.</li>
+  <li><code class="highlighter-rouge">clearContext()</code> - removes all context pairs from the logger.
+The <code class="highlighter-rouge">Logger</code> object has the following property:</li>
+  <li><code class="highlighter-rouge">level</code> - where <code class="highlighter-rouge">level</code> is a log4js level or a string that matches a level (e.g. ‘info’, ‘INFO’, etc). This allows overriding the configured level for this logger. Changing this value applies to all loggers of the same category.</li>
+</ul>
+
+<h2 id="shutdown---log4jsshutdowncb">Shutdown - <code class="highlighter-rouge">log4js.shutdown(cb)</code></h2>
+
+<p><code class="highlighter-rouge">shutdown</code> accepts a callback that will be called when log4js has closed all appenders and finished writing log events. Use this when your programme exits to make sure all your logs are written to files, sockets are closed, etc.</p>
+
+<h2 id="custom-layouts---log4jsaddlayouttype-fn">Custom Layouts - <code class="highlighter-rouge">log4js.addLayout(type, fn)</code></h2>
+<p>This function is used to add user-defined layout functions. See <a href="/layouts.html">layouts</a> for more details and an example.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

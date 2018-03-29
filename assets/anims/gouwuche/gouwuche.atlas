@@ -1,0 +1,69 @@
+
+gouwuche.png
+size: 245,245
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+a
+  rotate: false
+  xy: 195, 213
+  size: 44, 30
+  orig: 44, 30
+  offset: 0, 0
+  index: -1
+b
+  rotate: false
+  xy: 117, 111
+  size: 79, 52
+  orig: 79, 52
+  offset: 0, 0
+  index: -1
+c
+  rotate: true
+  xy: 100, 45
+  size: 64, 76
+  orig: 64, 76
+  offset: 0, 0
+  index: -1
+chezi
+  rotate: false
+  xy: 2, 50
+  size: 96, 87
+  orig: 96, 87
+  offset: 0, 0
+  index: -1
+chezibu
+  rotate: false
+  xy: 2, 139
+  size: 113, 104
+  orig: 113, 104
+  offset: 0, 0
+  index: -1
+d
+  rotate: false
+  xy: 178, 32
+  size: 57, 77
+  orig: 57, 77
+  offset: 0, 0
+  index: -1
+e
+  rotate: true
+  xy: 2, 2
+  size: 46, 58
+  orig: 46, 58
+  offset: 0, 0
+  index: -1
+shangcheng
+  rotate: false
+  xy: 62, 30
+  size: 36, 18
+  orig: 36, 18
+  offset: 0, 0
+  index: -1
+xingxing
+  rotate: false
+  xy: 117, 165
+  size: 76, 78
+  orig: 76, 78
+  offset: 0, 0
+  index: -1

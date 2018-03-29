@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>log4js-node by nomiddlename</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=a7f232b4c6654881e6a8bd2ac48ee149603d74de">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>log4js-node</h1>
+        <p>A port of log4js to node.js</p>
+
+        
+          <p class="view"><a href="http://github.com/nomiddlename/log4js-node">View the Project on GitHub <small></small></a></p>
+        
+
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="appenders.html">Appenders</a></li>
+          <li><a href="layouts.html">Layouts</a></li>
+          <li><a href="terms.html">Terminology</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contrib-guidelines.html">Want to help?</a></li>
+          <li><a href="contributors.html">Contributors</a></li>
+        </ul>
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="multiprocess-appender">Multiprocess Appender</h1>
+
+<p>The multiprocess appender sends log events to a master server over TCP sockets. It can be used as a simple way to centralise logging when you have multiple servers or processes. It uses the node.js core networking modules, and so does not require any extra dependencies. Remember to call <code class="highlighter-rouge">log4js.shutdown</code> when your application terminates, so that the sockets get closed cleanly.</p>
+
+<p>Note that if you’re just using node core’s <code class="highlighter-rouge">cluster</code> module then you don’t need to use this appender - log4js will handle logging within the cluster transparently.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">type</code> - <code class="highlighter-rouge">multiprocess</code></li>
+  <li><code class="highlighter-rouge">mode</code> - <code class="highlighter-rouge">master|worker</code> - controls whether the appender listens for log events sent over the network, or is responsible for serialising events and sending them to a server.</li>
+  <li><code class="highlighter-rouge">appender</code> - <code class="highlighter-rouge">string</code> (only needed if <code class="highlighter-rouge">mode</code> == <code class="highlighter-rouge">master</code>)- the name of the appender to send the log events to</li>
+  <li><code class="highlighter-rouge">loggerPort</code> - <code class="highlighter-rouge">integer</code> (optional, defaults to <code class="highlighter-rouge">5000</code>) - the port to listen on, or send to</li>
+  <li><code class="highlighter-rouge">loggerHost</code> - <code class="highlighter-rouge">string</code> (optional, defaults to <code class="highlighter-rouge">localhost</code>) - the host/IP address to listen on, or send to</li>
+</ul>
+
+<h2 id="example-master">Example (master)</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">file</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'file'</span><span class="p">,</span> <span class="na">filename</span><span class="p">:</span> <span class="s1">'all-the-logs.log'</span> <span class="p">},</span>
+    <span class="na">server</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'multiprocess'</span><span class="p">,</span> <span class="na">mode</span><span class="p">:</span> <span class="s1">'master'</span><span class="p">,</span> <span class="na">appender</span><span class="p">:</span> <span class="s1">'file'</span><span class="p">,</span> <span class="na">loggerHost</span><span class="p">:</span> <span class="s1">'0.0.0.0'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'file'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'info'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>This creates a log server listening on port 5000, on all IP addresses the host has assigned to it. Note that the appender is not included in the appenders listed for the categories. Also note that the multiprocess master appender will send every event it receives to the underlying appender, regardless of level settings.</p>
+
+<h2 id="example-worker">Example (worker)</h2>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">log4js</span><span class="p">.</span><span class="nx">configure</span><span class="p">({</span>
+  <span class="na">appenders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">network</span><span class="p">:</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'multiprocess'</span><span class="p">,</span> <span class="na">mode</span><span class="p">:</span> <span class="s1">'worker'</span><span class="p">,</span> <span class="na">loggerHost</span><span class="p">:</span> <span class="s1">'log.server'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">categories</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">default</span><span class="p">:</span> <span class="p">{</span> <span class="na">appenders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'network'</span><span class="p">],</span> <span class="na">level</span><span class="p">:</span> <span class="s1">'error'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+<p>This will send all error messages to <code class="highlighter-rouge">log.server:5000</code>.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/nomiddlename">nomiddlename</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+
+  
+  </body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "girl_to_left",
+  "_objFlags": 0,
+  "_rawFiles": null,
+  "_duration": 0.5,
+  "sample": 60,
+  "speed": 1,
+  "wrapMode": 1,
+  "curveData": {
+    "props": {
+      "x": [
+        {
+          "frame": 0,
+          "value": 0,
+          "curve": "circOut"
+        },
+        {
+          "frame": 0.5,
+          "value": -400
+        }
+      ]
+    }
+  },
+  "events": []
+}
